@@ -24,13 +24,16 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      - name: Horusec
-        uses: fike/horusec-action@main
-        with:
-          arguments: --output-format="sarif" -O="results.sarif"
+      
+      - name: Grab and build Horusec
+        run: |
+          git clone https://github.com/ZupIT/horusec.git
+          cd horusec
+          git reset --hard 8659ee7bdb5ca0c82a2eff563523947398c46d63
+          make build-dev
+          ./horusec start -p="${{ GITHUB_WORKSPACE }}" -O="${{ GITHUB_WORKSPACE }}/report.sarif" --output-format="sarif"
       
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: results.sarif
+          sarif_file: ${{ GITHUB_WORKSPACE }}/results.sarif
