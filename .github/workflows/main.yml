@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v2
+        with:
+          path: 'code'
       
       - name: Setup Go environment
         uses: actions/setup-go@v2.2.0
@@ -30,7 +32,7 @@ jobs:
           
       - name: Run Horusec
         run: |
-          ./horusec/horusec start -p="$GITHUB_WORKSPACE" -O="$GITHUB_WORKSPACE/report.sarif" --output-format="sarif"
+          ./horusec/horusec start -p="$GITHUB_WORKSPACE/code" -O="$GITHUB_WORKSPACE/report.sarif" --output-format="sarif"
       
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
